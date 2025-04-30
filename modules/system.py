@@ -201,6 +201,12 @@ else:
 if scheduler_enabled:
     import schedule # pip install schedule
 
+# # Regular beacon transmissions
+# if beacon_enabled:
+#     import schedule # pip install schedule
+#     from modules.beacon import *
+#     logger.info(f'>>>>> Beacon transmissions enabled!')
+
 # Sentry Configuration
 if sentry_enabled:
     from math import sqrt
@@ -415,6 +421,8 @@ def get_node_location(nodeID, nodeInt=1, channel=0):
         else:
             logger.warning(f"System: Location for NodeID {nodeID} not found in nodeDb")
             return position
+
+    return None
 
 
 def get_closest_nodes(nodeInt=1,returnCount=3):

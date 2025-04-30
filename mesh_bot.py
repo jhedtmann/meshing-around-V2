@@ -13,10 +13,16 @@ import time # for sleep, get some when you can :)
 import random
 from modules.log import *
 from modules.system import *
+from datetime import datetime
+
+from modules.beacon import BeaconManager
 
 # list of commands to remove from the default list for DM only
 restrictedCommands = ["blackjack", "videopoker", "dopewars", "lemonstand", "golfsim", "mastermind", "hangman", "hamtest"]
 restrictedResponse = "🤖only available in a Direct Message📵" # "" for none
+
+# keep a global sequence counter for our beacon
+sequence_counter = 0
 
 # Global Variables
 DEBUGpacket = False # Debug print the packet rx
@@ -148,8 +154,8 @@ def auto_response(message, snr, rssi, hop, pkiStatus, message_from_id, channel_n
     return bot_response
 
 def handle_cmd(message, message_from_id, deviceID):
-    # why CMD? its just a command list. a terminal would normally use "Help"
-    # I didnt want to invoke the word "help" in Meshtastic due to its possible emergency use
+    # why CMD? it's just a command list. a terminal would normally use "Help"
+    # I didn't want to invoke the word "help" in Meshtastic due to its possible emergency use
     if " " in message and message.split(" ")[1] in trap_list:
         return "🤖 just use the commands directly in chat"
     return help_message
@@ -1370,7 +1376,7 @@ async def start_rx():
     for i in range(1, 10):
         if globals().get(f'interface{i}_enabled', False):
             myNodeNum = globals().get(f'myNodeNum{i}', 0)
-            logger.info(f"System: Autoresponder Started for Device{i} {get_name_from_number(myNodeNum, 'long', i)},"
+            logger.info(f"System: Autoresponder Started for Device{i} {get_name_from_number(myNodeNum, 'long', i)}, "
                         f"{get_name_from_number(myNodeNum, 'short', i)}. NodeID: {myNodeNum}, {decimal_to_hex(myNodeNum)}")
     
     if llm_enabled:
@@ -1444,6 +1450,7 @@ async def start_rx():
             logger.debug(f"System: SMTP Email Alerting Enabled using IMAP")
         else:
             logger.debug(f"System: SMTP Email Alerting Enabled")
+
     if scheduler_enabled:
         # Reminder Scheduler is enabled every Monday at noon send a log message
         schedule.every().monday.at("12:00").do(lambda: logger.info("System: Scheduled Broadcast Enabled Reminder"))
@@ -1534,6 +1541,14 @@ async def start_rx():
 async def main():
     meshRxTask = asyncio.create_task(start_rx())
     watchdogTask = asyncio.create_task(watchdog())
+
+    # beacon stuff goes here
+    if beacon_enabled:
+        logger.debug(f"System: Beacon transmissions enabled on channel {beacon_channel} with interval {beacon_interval_minutes} minutes.")
+        interface = globals()[f'interface{beacon_interface}']
+        beacon = BeaconManager()
+        beacon.start_beacon(beacon_interval_minutes, beacon_channel, interface, 0, beacon_message)
+
     if file_monitor_enabled:
         fileMonTask: asyncio.Task = asyncio.create_task(handleFileWatcher())
     if radio_detection_enabled:

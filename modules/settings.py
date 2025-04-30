@@ -82,6 +82,11 @@ if 'scheduler' not in config:
     config['scheduler'] = {'enabled': 'False'}
     config.write(open(config_file, 'w'))
 
+# add a beacon section if it doesn't exist already
+if 'beacon' not in config:
+    config['beacon'] = {'enabled': 'False'}
+    config.write(open(config_file, 'w'))
+
 if 'emergencyHandler' not in config:
     config['emergencyHandler'] = {'enabled': 'False', 'alert_channel': '2', 'alert_interface': '1', 'email': ''}
     config.write(open(config_file, 'w'))
@@ -317,6 +322,14 @@ try:
     schedulerInterval = config['scheduler'].get('interval', '') # default empty
     schedulerTime = config['scheduler'].get('time', '') # default empty
     schedulerValue = config['scheduler'].get('value', '') # default empty
+
+    # beacon
+    print(f"{config['beacon']}")
+    beacon_enabled = config['beacon'].getboolean('enabled', False)
+    beacon_interface = config['beacon'].getint('interface', 1) # default interface 1
+    beacon_channel = config['beacon'].getint('channel', 2) # default channel 2
+    beacon_message = config['beacon'].get('text', 'beacon') # default message
+    beacon_interval_minutes = config['beacon'].get('interval', '') # default empty
 
     # radio monitoring
     radio_detection_enabled = config['radioMon'].getboolean('enabled', False)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="39f168c0-1dcb-4f54-aa24-e74b4f46760e" name="mesh.db0bc">
+        <fileTransfer accessType="SFTP" host="44.149.38.138" port="22" sshConfigId="f2c791b2-517b-4b44-b528-b4e3d7e78d6d" sshConfig="root@44.149.38.138:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" isUseSudo="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

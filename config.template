@@ -294,4 +294,9 @@ wantAck = False
 # Max limit buffer for radio testing. 233 is hard limit 2.5+ firmware
 maxBuffer = 200
 
-
+[beacon]
+enabled = True
+interval = 15
+interface = 1
+channel = 2
+text = the quick brown fox jumps over the lazy dog
